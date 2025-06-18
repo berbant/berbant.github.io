@@ -1,1 +1,65 @@
-Hello World!
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- https://quasar.dev/start/umd  -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
+  type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/quasar@2.18.1/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <!-- quasar start  -->
+  <div id="q-app" style="min-height: 100vh;">
+    <div class="q-pa-md q-gutter-sm">
+      <!-- https://quasar.dev/vue-components/button/ -->
+      <q-btn @click="startRecording" round color="blue" :loading="isRecording" :disable="isRecording"
+        icon="camera_front">
+        <template v-slot:loading>
+          <q-spinner-facebook></q-spinner-facebook>
+        </template>
+      </q-btn>
+
+      <q-btn @click="stopRecording" round color="red" :disable="!isRecording" icon="stop">
+      </q-btn>
+
+      <q-btn @click="playRecording" round color="green" :disable="audioUrl == null"
+        :icon="isPlaying ? 'pause' : 'play_arrow'">
+      </q-btn>
+
+      <q-btn @click="downloadRecording" round color="primary" :disable="audioUrl == null" icon="download">
+      </q-btn>
+
+      <q-btn @click="sentRecording" round color="primary" :loading="isUploading" :disable="audioUrl == null"
+        icon="send">
+        <template v-slot:loading>
+          <q-spinner-facebook></q-spinner-facebook>
+        </template>
+      </q-btn>
+
+
+
+    </div>
+  </div>
+  <!-- quasar finish  -->
+
+  <!-- https://github.com/ricky0123/vad -->
+  <!-- Подключаем ONNX Runtime -->
+  <!-- https://github.com/snakers4/silero-vad?tab=readme-ov-file -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <!-- Подключаем библиотеку VAD (начиная с 0.20 версии модули WASM не могут загружаться без backend :( ) -->
+  <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js" defer></script>
+  <!-- https://quasar.dev/start/umd  -->
+  <script src="vue.global.prod.js"></script>
+  <script src="quasar.umd.prod.js"></script>
+  <script id="quasar.js" type="module" src="/quasar.js"></script>
+
+  <!-- <script src="script.js"></script> -->
+</body>
+
+</html>
