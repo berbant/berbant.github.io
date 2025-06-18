@@ -1,65 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- https://quasar.dev/start/umd  -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
-  type="text/css">
-<link href="https://cdn.jsdelivr.net/npm/quasar@2.18.1/dist/quasar.prod.css" rel="stylesheet" type="text/css">
-
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Статическая страница Quasar</title>
+
+  <!-- 1. Подключаем стили Quasar -->
+  <link href="https://cdn.jsdelivr.net/npm/quasar@2.16.4/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+  
+  <!-- 2. Подключаем иконки (Material Icons - стандарт для Quasar) -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <!-- quasar start  -->
-  <div id="q-app" style="min-height: 100vh;">
-    <div class="q-pa-md q-gutter-sm">
-      <!-- https://quasar.dev/vue-components/button/ -->
-      <q-btn @click="startRecording" round color="blue" :loading="isRecording" :disable="isRecording"
-        icon="camera_front">
-        <template v-slot:loading>
-          <q-spinner-facebook></q-spinner-facebook>
-        </template>
-      </q-btn>
-
-      <q-btn @click="stopRecording" round color="red" :disable="!isRecording" icon="stop">
-      </q-btn>
-
-      <q-btn @click="playRecording" round color="green" :disable="audioUrl == null"
-        :icon="isPlaying ? 'pause' : 'play_arrow'">
-      </q-btn>
-
-      <q-btn @click="downloadRecording" round color="primary" :disable="audioUrl == null" icon="download">
-      </q-btn>
-
-      <q-btn @click="sentRecording" round color="primary" :loading="isUploading" :disable="audioUrl == null"
-        icon="send">
-        <template v-slot:loading>
-          <q-spinner-facebook></q-spinner-facebook>
-        </template>
-      </q-btn>
+  <!-- 3. Это корневой элемент, куда будет вмонтировано наше приложение -->
+  <div id="q-app">
+    <!-- q-layout - это основа макета страницы в Quasar -->
+    <q-layout view="lHh lpr lFf">
+      <q-page-container>
+        <!-- q-page - компонент-обертка для контента страницы -->
+        <!-- "flex flex-center" - это вспомогательные CSS-классы Quasar для центрирования -->
+        <q-page class="flex flex-center text-center">
+          <div>
+            <h4>Простейшая Quasar страница</h4>
+            <p>Этот файл работает без сервера!</p>
 
 
-
-    </div>
+            <!-- Используем компонент кнопки из Quasar -->
+            <!-- @click вызывает нашу функцию showNotification -->
+            <q-btn 
+              @click="showNotification" 
+              color="primary" 
+              icon="touch_app" 
+              label="Нажми меня!" 
+              size="lg" 
+              glossy 
+            />
+          </div>
+        </q-page>
+      </q-page-container>
+    </q-layout>
   </div>
-  <!-- quasar finish  -->
 
-  <!-- https://github.com/ricky0123/vad -->
-  <!-- Подключаем ONNX Runtime -->
-  <!-- https://github.com/snakers4/silero-vad?tab=readme-ov-file -->
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-  <!-- Подключаем библиотеку VAD (начиная с 0.20 версии модули WASM не могут загружаться без backend :( ) -->
-  <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js" defer></script>
-  <!-- https://quasar.dev/start/umd  -->
+  <!-- 4. Сначала подключаем Vue.js, т.к. Quasar от него зависит -->
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/quasar@2.18.1/dist/quasar.umd.prod.js"></script>
-  <script id="quasar.js" type="module" src="/quasar.js"></script>
 
-  <!-- <script src="script.js"></script> -->
+  <!-- 5. Затем подключаем сам Quasar -->
+  <script src="https://cdn.jsdelivr.net/npm/quasar@2.16.4/dist/quasar.umd.prod.js"></script>
+
+  <!-- 6. Наш собственный скрипт для управления приложением -->
+  <script>
+    /*
+     * В CDN-версии мы получаем доступ к Vue и Quasar
+     * через глобальные объекты `Vue` и `Quasar`.
+     */
+    const { createApp } = Vue;
+    const { useQuasar } = Quasar;
+
+    const app = createApp({
+      // Метод setup() - это место, где определяется вся логика компонента
+      setup() {
+        // Получаем доступ к функциям Quasar, таким как Notify
+        const $q = useQuasar();
+
+        // Наша функция, которая будет вызвана при клике
+        function showNotification() {
+          $q.notify({
+            message: 'Отлично! Интерактивность работает!',
+            icon: 'sentiment_very_satisfied',
+            color: 'positive',
+            position: 'top',
+          });
+        }
+
+        // Мы должны вернуть функцию, чтобы она была доступна в шаблоне
+        return {
+          showNotification,
+        };
+      },
+    });
+
+    // "Регистрируем" плагин Quasar в нашем приложении Vue
+    app.use(Quasar, {
+      plugins: {
+        Notify, // Включаем плагин уведомлений
+      },
+    });
+
+    // "Монтируем" наше приложение в элемент <div id="q-app">
+    app.mount('#q-app');
+  </script>
 </body>
-
 </html>
